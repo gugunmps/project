@@ -1,0 +1,66 @@
+class PerformanceElem(DifferentiableElement):
+    """
+    Representation of a performance computing output node.
+    This element contains methods for setting the
+    desired output (d) and also computing the final
+    performance P of the network.
+
+    This implementation assumes a single output.
+    """
+
+    def __init__(self,input,desired_value):
+        assert isinstance(input,(Input,Neuron))
+        DifferentiableElement.__init__(self)
+        self.my_input = input
+        self.my_desired_val = desired_value
+
+    def output(self):
+        """
+        Returns the output of this PerformanceElem node.
+        
+        returns: number (float/int)
+        """   
+        performance_node=-0.5*(self.my_desired_val-self.my_input)**2 # -0.5 (d - o)**2
+        return float (performance_node)
+
+    def dOutdX(self, elem):
+        """
+        Returns the derivative of this PerformanceElem node with respect
+        to some weight, given by elem.
+
+        elem: an instance of Weight
+
+        returns: number (int/float)    
+        """
+        adOutdX= (self.my_desired_val-self.my_input)*input.dOutdX(elem)        #(desired-output)*o.dOutdX(w)
+        return float(adOutdX)
+
+    def set_desired(self,new_desired):
+        self.my_desired_val = new_desired
+
+    def get_input(self):
+        return self.my_input
+
+def compute_output(self):
+        """
+        Returns the output of this Neuron node, using a sigmoid as
+        the threshold function.
+
+        returns: number (float or int)
+        """
+        a=1 / (1 + exp(-sum(self.my_inputs*self.my_weights)))  #sigmoidfunction   =  1 / (1 + exp(-z)) ket : Z=weightedinput or using differentiable
+        return float(a) 
+  def compute_doutdx(self, elem):
+        """
+        Returns the derivative of this Neuron node, with respect to weight
+        elem, calling output() and/or dOutdX() recursively over the inputs.
+
+        elem: an instance of Weight
+
+        returns: number (float/int)
+        """
+    
+           a=(self.output()*(1-self.output()))* self.get_input() # oA*(1-oA)*input.
+
+            return float (a)
+
