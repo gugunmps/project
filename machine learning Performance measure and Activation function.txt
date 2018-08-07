@@ -1,11 +1,3 @@
-#!/usr/bin/env python
-# 6.034 Lab 5
-# Neural Net
-# - In this file we have an incomplete skeleton of
-# a neural network implementation.  Follow the online instructions
-# and complete the NotImplemented methods below.
-#
-
 import math
 import random
 
@@ -35,12 +27,12 @@ class DifferentiableElement(object):
     parts that require some differentiable element.
     """
     def output(self):
-        raise NotImplementedError, "This is an abstract method"
+        raise NotImplementedError ("This is an abstract method")
 
     
 
     def dOutdX(self, elem):
-        raise NotImplementedError, "This is an abstract method"
+        raise NotImplementedError ("This is an abstract method")
 
         
     def clear_cache(self):
@@ -175,7 +167,7 @@ class Neuron(DifferentiableElement):
       
 
     def dOutdX(self, elem):
-        DifferentiableElement.dOutdx() # Implement compute_doutdx instead!!
+        # Implement compute_doutdx instead!!
         if self.use_cache:
             # caching optimization, saves previously computed dOutDx.
             if elem not in self.my_doutdx:
@@ -193,7 +185,7 @@ class Neuron(DifferentiableElement):
         returns: number (float/int)
         """
     #a=(self.output()*(1-self.output()))*self.get_weights*input.dOutDx(elem)
-        a=(self.output()*(1-self.output()))* self.get_inputs() # oA*(1-oA)*input.
+        a=(self.output())*(1-self.output())* self.get_inputs() # oA*(1-oA)*input.
 
         return float (a)
         
@@ -243,8 +235,9 @@ class PerformanceElem(DifferentiableElement):
 
         returns: number (int/float)    
         """
-        adOutdX= (self.my_desired_val-self.my_input)*input.dOutdX(elem)        #(desired-output)*o.dOutdX(w)
-        return float(adOutdX)
+        
+        num=(int(self.my_desired_val-self.my_input))*input.dOutdX(elem)       #(desired-output)*o.dOutdX(w)
+        return float(num)
 
     def set_desired(self,new_desired):
         self.my_desired_val = new_desired
@@ -256,6 +249,26 @@ def alphabetize(x,y):
      if x.get_name()>y.get_name():
         return 1
      return -1
+    
+def cmp_to_key(mycmp):
+    'Convert a cmp= function into a key= function'
+    class K:
+        def __init__(self, obj, *args):
+            self.obj = obj
+        def __lt__(self, other):
+            return mycmp(self.obj, other.obj) < 0
+        def __gt__(self, other):
+            return mycmp(self.obj, other.obj) > 0
+        def __eq__(self, other):
+            return mycmp(self.obj, other.obj) == 0
+        def __le__(self, other):
+            return mycmp(self.obj, other.obj) <= 0
+        def __ge__(self, other):
+            return mycmp(self.obj, other.obj) >= 0
+        def __ne__(self, other):
+            return mycmp(self.obj, other.obj) != 0
+    return K
+
 class Network(object):
     def __init__(self,performance_node,neurons):
         self.inputs =  []
@@ -263,7 +276,7 @@ class Network(object):
         self.performance = performance_node
         self.output = performance_node.get_input()
         self.neurons = neurons[:]
-        self.neurons.sort(cmp=alphabetize)
+        self.neurons.sort(key=cmp_to_key(alphabetize))
         for neuron in self.neurons:
             self.weights.extend(neuron.get_weights())
             for i in neuron.get_inputs():
@@ -365,40 +378,6 @@ def make_neural_net_two_layer():
     P = PerformanceElem(C, 0.0)
     net = Network(P,[C])
     return net
-
-def make_neural_net_multilayer():
-     i0 = Input('i0', -1.0) # this input is immutable
-    i1 = Input('i1', 0.0)
-    i2 = Input('i2', 0.0)
-
-    w1A = Weight('w1A', 1) #use random weight,
-    w2A = Weight('w2A', 1)
-    wA  = Weight('wA', 1)
-    w1B = Weight('w1B', 1)
-    w2B = Weight('w2B', 1)
-    wB  = Weight('wB', 1)
-    wC  = Weight('wC', 1)
-    wAC = Weight('wAC', 2 )
-    wBC = Weight('wBC', 2)
-    wD  =
-    wAD =
-    wBD =
-    wE  =
-    wCE = 
-    wDE =
-    
-    # Inputs must be in the same order as their associated weights
-    A = Neuron('A', [i1,i2,i0], [w1A,w2A,wA])
-    B =  Neuron('B',[i1,i2,i0],[w1B,w2B,wB])
-
-    C =  Neuron('C',[A,B,i0],[wAC,wBC,wC])
-    D=  Neuron ('D',[A,B,i0],[wAD,wBD,wD])
-    E= Neuron ('E', [A,C
-
-    P = PerformanceElem(C, 0.0)
-    net = Network(P,[C])
-    return net
-    
    
 
 def make_neural_net_challenging():
@@ -492,7 +471,7 @@ def train(network,
         performances = []  # store performance on each data point
         for datum in data:
             # set network inputs
-            for i in xrange(len(network.inputs)):
+            for i in range(len(network.inputs)):
                 network.inputs[i].set_value(datum[i])
 
             # set network desired output
